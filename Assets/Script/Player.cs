@@ -10,14 +10,15 @@ public class Player : MonoBehaviour
     bool isGrounded;
     bool doubleJump;
     private Animator anim;
-    
+    public Ak ak;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
-    
+
     void Update()
     {
         Move();
@@ -27,15 +28,23 @@ public class Player : MonoBehaviour
     {
         float movement = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(movement * Speed, rb.velocity.y);
-        if(movement > 0) 
+        if (movement > 0)
         {
             anim.SetBool("walk", true);
-            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            if (!ak.shooting)
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            }
         }
         if (movement < 0)
         {
             anim.SetBool("walk", true);
-            transform.eulerAngles = new Vector3(0f, 0180f, 0f);
+            
+            if (!ak.shooting)
+            {
+                transform.eulerAngles = new Vector3(0f, 180f, 0f);
+            }
+           
         }
         if (movement == 0)
         {
@@ -46,31 +55,30 @@ public class Player : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump"))
         {
-            if(isGrounded) 
+            if (isGrounded)
             {
                 rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
                 doubleJump = true;
                 anim.SetBool("jump", true);
             }
-            else 
+            else
             {
-                if (doubleJump) 
+                if (doubleJump)
                 {
                     rb.velocity = new Vector2(rb.velocity.x, 0f);
                     rb.AddForce(new Vector2(0f, JumpForce), ForceMode2D.Impulse);
                     doubleJump = false;
+                    doubleJump = false;
                 }
-
             }
-           
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.layer == 8)
+        anim.SetBool("jump", false);
+        if (collision.gameObject.layer == 8)
         {
             isGrounded = true;
-            anim.SetBool("jump", false);
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
@@ -79,5 +87,6 @@ public class Player : MonoBehaviour
         {
             isGrounded = false;
         }
+      
     }
 }
