@@ -10,12 +10,13 @@ public class Player : MonoBehaviour
     bool isGrounded;
     bool doubleJump;
     private Animator anim;
-    public Ak ak;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
@@ -31,20 +32,13 @@ public class Player : MonoBehaviour
         if (movement > 0)
         {
             anim.SetBool("walk", true);
-            if (!ak.shooting)
-            {
-                transform.eulerAngles = new Vector3(0f, 0f, 0f);
-            }
+            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+
         }
         if (movement < 0)
         {
             anim.SetBool("walk", true);
-            
-            if (!ak.shooting)
-            {
-                transform.eulerAngles = new Vector3(0f, 180f, 0f);
-            }
-           
+            transform.eulerAngles = new Vector3(0f, 180f, 0f);
         }
         if (movement == 0)
         {
@@ -76,14 +70,14 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         anim.SetBool("jump", false);
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.CompareTag("Chao"))
         {
             isGrounded = true;
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 8)
+        if (collision.gameObject.CompareTag("Chao"))
         {
             isGrounded = false;
         }

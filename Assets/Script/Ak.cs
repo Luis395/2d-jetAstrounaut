@@ -7,8 +7,9 @@ public class Ak : MonoBehaviour
     public GameObject myPlayer;
     private SpriteRenderer sr;
     private Animator anim;
-    public bool shooting;
-    public bool rotacionar;
+    public GameObject projectile;
+    public Transform shotpoint;
+
     private void Start()
     {
         sr = GetComponent<SpriteRenderer>();
@@ -18,7 +19,6 @@ public class Ak : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Mouse1))
         {
-            shooting = true;
             sr.enabled = true;
             Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
 
@@ -26,24 +26,31 @@ public class Ak : MonoBehaviour
 
             float rotateZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, rotateZ);
-            if(rotateZ < -90 || rotateZ > 90)
+            if (rotateZ < -90 || rotateZ > 90)
             {
-                rotacionar = true;
+
                 if (myPlayer.transform.eulerAngles.y == 0)
                 {
                     transform.localRotation = Quaternion.Euler(180, 0, -rotateZ);
+
                 }
-                else if(myPlayer.transform.eulerAngles.y == 180)
+                else if (myPlayer.transform.eulerAngles.y == 180)
                 {
-                    transform.localRotation = Quaternion.Euler(180,180, -rotateZ);
-                    
+                    transform.localRotation = Quaternion.Euler(180, 180, -rotateZ);
+
                 }
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                CameraController.instance.shake();
+
+                GameObject shoot = Instantiate(projectile, shotpoint.position, transform.rotation);
+                shoot.GetComponent<Rigidbody2D>().AddForce(transform.right * 1000);
             }
         }
         else
         {
             sr.enabled = false;
-            shooting = false;
         }
     }
 }
